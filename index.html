@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat box</title>
+  </head>
+  <body>
+    <h1>Chat box</h1>
+    <ul id="chat-box"></ul>
+
+    <form id="chat-form">
+      <input type="text" name="" id="chat-mes" />
+      <button id="submit-chat">Submit</button>
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const name = prompt("Ten ban la gi:");
+    const socket = io();
+
+    const chatForm = document.getElementById("chat-form");
+    const chatMes = document.getElementById("chat-mes");
+
+    chatForm.addEventListener("submit", (err) => {
+      err.preventDefault();
+
+      const message = chatMes.value;
+      socket.emit("on-chat", {
+        name,
+        message,
+      });
+      chatMes.value = "";
+    });
+
+    const chatBox = document.getElementById("chat-box");
+    socket.on("user-chat", (message) => {
+      const chatBoxMessage = document.createElement("li");
+      chatBoxMessage.textContent = `${message.name}: ${message.message}`;
+
+      chatBox.appendChild(chatBoxMessage);
+    });
+  </script>
+</html>
